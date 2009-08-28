@@ -1,0 +1,51 @@
+= PureMvcTestCase
+
+This TestCase class allows testing of PureMVC code through FlexUnit.  The style is intended to mirror EventfulTestCase (another extension to FlexUnit).
+
+
+== Installation
+
+Installation is easy! Just drop the file into an appropriate directory:
+1. Create the following directory structure under your flex project:
+    test/org/puremvc/as3/test
+2. Copy the file `PureMvcTestCase.as` into this new directory.
+3. Ensure that your compiler settings will look in that directory.
+
+You should now be able to import PureMvcTestCase into your test classes.
+
+
+== How do I use it?
+
+When creating your test class, have it extend PureMvcTestCase.
+
+Here are the methods which are made available:
+
+    * expectNotification(notificationName:String) 
+          Sets up the expectation that a notification is sent with the passed name. Can be called multiple times to set the expectation for multiple notifications.
+    * assertExpectedNotificationsOccurred(userMessage='') 
+          Asserts that all expected notifications were sent. The userMessage parameter indicates an optional message to be prepended for a failure message.
+    * lastActualNotification
+          Property which represents the last notification which was sent (the last actual notification).
+
+
+== Example Test Class
+
+The following is an example of the kind of test you can write:
+
+public class ChuckProxyTest extends PureMvcTestCase
+{
+    private var chuck:ChuckProxy = new ChuckProxy();
+ 
+    public function testShouldSendFlashNotificationWhenSeeingTerrorist():void
+    {
+        var terrorist:Terrorist = new Terrorist();
+        expectNotification(ApplicationFacade.FLASHED);
+ 
+        chuck.lookAt(terrorist);
+ 
+        // asserts FLASHED notification was sent
+        assertExpectedNotificationsOccurred();
+        // asserts notification body was the terrorist
+        assertEquals(terrorist, lastActualNotification.getBody());
+    }
+}
